@@ -6,7 +6,7 @@
     <BaseCard>
       <div class='controls'>
         <BaseButton mode='outline'>Refresh</BaseButton>
-        <BaseButton link to='/register'>Register as a Mentor</BaseButton>
+        <BaseButton v-if='!isCoach' link to='/register'>Register as a Mentor</BaseButton>
       </div>
       <ul v-if='hasCoaches'>
         <CoachItem
@@ -40,6 +40,9 @@ export default {
     }
   },
   computed: {
+    isCoach() {
+      return this.$store.getters['coaches/isCoach'];
+    },
     filteredCoaches() {
       const coaches = this.$store.getters['coaches/coaches'];
       return coaches.filter(coach => {
