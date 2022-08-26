@@ -26,13 +26,15 @@ export default {
       id: userId
     });
   },
-  async loadCoaches(context) {
+  async loadCoaches(context, payload) {
+    if (!payload.forceRefresh && !context.getters.shouldUpdate) return; //exit if it shouldn't update yet
+
     const response = await fetch(`https://mentor-app-fd5c1-default-rtdb.firebaseio.com/coaches.json`);
 
     const responseData = await response.json();
 
     if(!response.ok) {
-      //error handlling
+      throw new Error(responseData.message || 'Failed to Fetch!');
     }
 
     const coaches = [];
@@ -51,5 +53,6 @@ export default {
     }
 
     context.commit('setCoaches', coaches);
+    context.commit('setFetchTimestamp'); //timestamp for caching when you last fetched coaches
   }
 };

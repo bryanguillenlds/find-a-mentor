@@ -1,30 +1,36 @@
 <template>
-  <section>
-    <CoachFilter @change-filter='setFilters' ></CoachFilter>
-  </section>
-  <section>
-    <BaseCard>
-      <div class='controls'>
-        <BaseButton @click="loadCoaches" mode='outline'>Refresh</BaseButton>
-        <BaseButton v-if='!isCoach && !isLoading' link to='/register'>Register as a Mentor</BaseButton>
-      </div>
-      <div v-if='isLoading'>
-        <BaseSpinner></BaseSpinner>
-      </div>
-      <ul v-else-if='hasCoaches'>
-        <CoachItem
-          v-for='coach in filteredCoaches'
-          :key='coach.id'
-          :id='coach.id'
-          :first-name='coach.firstName'
-          :last-name='coach.lastName'
-          :rate='coach.hourlyRate'
-          :areas='coach.areas'
-        />
-      </ul>
-      <h3 v-else>No Mentors Found</h3>
-    </BaseCard>
-  </section>
+  <div>
+
+    <BaseDialog :show='!!error' title='An Error Occurred' @close='handleError'>
+      <p>{{ error }}</p>
+    </BaseDialog>
+    <section>
+      <CoachFilter @change-filter='setFilters' ></CoachFilter>
+    </section>
+    <section>
+      <BaseCard>
+        <div class='controls'>
+          <BaseButton @click="loadCoaches(true)" mode='outline'>Refresh</BaseButton>
+          <BaseButton v-if='!isCoach && !isLoading' link to='/register'>Register as a Mentor</BaseButton>
+        </div>
+        <div v-if='isLoading'>
+          <BaseSpinner></BaseSpinner>
+        </div>
+        <ul v-else-if='hasCoaches'>
+          <CoachItem
+            v-for='coach in filteredCoaches'
+            :key='coach.id'
+            :id='coach.id'
+            :first-name='coach.firstName'
+            :last-name='coach.lastName'
+            :rate='coach.hourlyRate'
+            :areas='coach.areas'
+          />
+        </ul>
+        <h3 v-else>No Mentors Found</h3>
+      </BaseCard>
+    </section>
+  </div>
 </template>
 
 <script>
@@ -36,6 +42,7 @@ export default {
   data() {
     return {
       isLoading: false,
+      error: null,
       activeFilters: {
         frontend: true,
         backend: true,
@@ -73,10 +80,17 @@ export default {
     setFilters(updatedFilters) {
       this.activeFilters = updatedFilters;
     },
-    async loadCoaches() {
+    async loadCoaches(refresh = false) {
       this.isLoading = true;
-      await this.$store.dispatch('coaches/loadCoaches');
+      try {
+        await this.$store.dispatch('coaches/loadCoaches', { forceRefresh: refresh });
+      } catch (error) {
+        this.error = error.message || 'Something went wrong!';
+      }
       this.isLoading = false;
+    },
+    handleError() {
+      this.error = null;
     }
   }
 };
