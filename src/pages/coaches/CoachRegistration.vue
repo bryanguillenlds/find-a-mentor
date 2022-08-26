@@ -1,10 +1,12 @@
 <template>
-  <section>
-    <BaseCard>
-      <h2>Register as a Mentor now</h2>
-      <CoachForm @save-data='saveData' />
-    </BaseCard>
-  </section>
+  <div>
+    <section>
+      <BaseCard>
+        <h2>Register as a Mentor now</h2>
+        <CoachForm @save-data='saveData' />
+      </BaseCard>
+    </section>
+  </div>
 </template>
 
 <script>
