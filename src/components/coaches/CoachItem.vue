@@ -1,13 +1,13 @@
 <template>
   <li>
     <h3>{{fullName}}</h3>
-    <h4>${{rate}}/hour</h4>
+    <h4>${{rate}}/{{ $t('hour')}}</h4>
     <div>
       <BaseBadge v-for='area in areas' :key='area' :type='area' :title='area'></BaseBadge>
     </div>
     <div class='actions'>
-      <BaseButton mode='outline' link :to='coachContactLink'>Contact</BaseButton>
-      <BaseButton link :to='coachDetailsLink'>View Details</BaseButton>
+      <BaseButton mode='outline' link :to='coachContactLink'>{{ $t('contact') }}</BaseButton>
+      <BaseButton link :to='coachDetailsLink'>{{ $t('view') }}</BaseButton>
     </div>
   </li>
 </template>
