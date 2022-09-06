@@ -3,12 +3,38 @@
     <nav>
       <h1><router-link to='/'>Find a Mentor</router-link></h1>
       <ul>
-        <li><router-link to='/coaches'>{{ $t('mentors') }}</router-link></li>
-        <li><router-link to='/requests'>{{ $t('requests') }}</router-link></li>
+        <li>
+          <router-link to='/coaches'>{{ $t('mentors') }}</router-link>
+        </li>
+        <li v-if='isLoggedIn'>
+          <router-link to='/requests'>{{ $t('requests') }}</router-link>
+        </li>
+        <li v-else>
+          <router-link to='/auth'>Login</router-link>
+        </li>
+        <li v-if='isLoggedIn'>
+          <BaseButton @click='logout'>Logout</BaseButton>
+        </li>
       </ul>
     </nav>
   </header>
 </template>
+
+<script>
+export default {
+  computed: {
+    isLoggedIn() {
+      return this.$store.getters.isAuthenticated;
+    }
+  },
+  methods: {
+    logout() {
+      this.$store.dispatch('logout');
+      this.$router.replace('/coaches');
+    }
+  }
+}
+</script>
 
 <style scoped>
 header {

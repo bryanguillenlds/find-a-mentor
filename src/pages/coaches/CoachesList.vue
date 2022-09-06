@@ -11,7 +11,8 @@
       <BaseCard>
         <div class='controls'>
           <BaseButton @click="loadCoaches(true)" mode='outline'>{{ $t('refresh') }}</BaseButton>
-          <BaseButton v-if='!isCoach && !isLoading' link to='/register'>Register as a Mentor</BaseButton>
+          <BaseButton link to='"/auth?redirect=register' v-if='!isLoggedIn'>Login to Register as a Mentor</BaseButton>
+          <BaseButton v-if='isLoggedIn && !isCoach && !isLoading' link to='/register'>Register as a Mentor</BaseButton>
         </div>
         <div v-if='isLoading'>
           <BaseSpinner></BaseSpinner>
@@ -54,6 +55,9 @@ export default {
     this.loadCoaches();
   },
   computed: {
+    isLoggedIn() {
+      return this.$store.getters.isAuthenticated;
+    },
     isCoach() {
       return this.$store.getters['coaches/isCoach'];
     },
